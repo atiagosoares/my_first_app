@@ -8,7 +8,7 @@ colorama==0.4.4==pyhd3eb1b0_0
 dataclasses==0.8==pyh6d0b6a4_7
 flask==2.0.2==pyhd3eb1b0_0
 gunicorn==20.1.0==pypi_0
-itsdangerous=2.0.1==pyhd3eb1b0_0
+itsdangerous==2.0.1==pyhd3eb1b0_0
 jinja2==3.0.2==pyhd3eb1b0_0
 markupsafe==2.0.1==py39h2bbff1b_0
 openssl==1.1.1l==h2bbff1b_0

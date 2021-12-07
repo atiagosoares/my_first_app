@@ -1,10 +1,10 @@
 certifi==2021.10.8
 click==8.0.3
-colorama @ file:///tmp/build/80754af9/colorama_1607707115595/work
-Flask @ file:///tmp/build/80754af9/flask_1634118196080/work
+colorama
+Flask
 gunicorn==20.1.0
-itsdangerous @ file:///tmp/build/80754af9/itsdangerous_1621432558163/work
-Jinja2 @ file:///tmp/build/80754af9/jinja2_1635780242639/work
-MarkupSafe @ file:///C:/ci/markupsafe_1621528502553/work
-Werkzeug @ file:///tmp/build/80754af9/werkzeug_1635505089296/work
+itsdangerous
+Jinja2
+MarkupSafe
+Werkzeug
 wincertstore==0.2

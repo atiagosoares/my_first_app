@@ -1,0 +1,40 @@
+<table id = 'player-character-table'>
+</table>
+<p>Who am I?</p>
+<div id="character-guess-form">
+<input id="character-guess-input" type="text"><br>
+<button onclick="check_guess()">Guess</button>
+</div>
+<script type = "text/javascript">
+//Primeiro passo, criar um objetoc com todos os ususários
+    var users = []
+    {% for user in users %}
+    users.push({
+        'id' : '{{ user.id }}',
+        'name' : '{{ user.name }}',
+        'character' : '{{ user.character }}' 
+    })
+    {% endfor %}
+
+    console.log(users)
+    s = '<tr><th>Player</th><th>Character</th></tr>'
+    for(let i = 0; i < users.length; i++){
+        if(users[i]['id'] != my_id){
+            s += '<tr><td>' + users[i]["name"] + '</td><td>' + users[i]["character"] + '</td></tr>'
+        }
+    }
+    document.getElementById('player-character-table').innerHTML = s
+
+    function check_guess(){
+        guess = document.getElementById("character-guess-input").value
+
+        for(let i = 0; i < users.length; i++){
+            if(users[i]['id'] == my_id){
+                if(guess == users[i]['character']){
+                    socket.emit("correct_guess")
+                    document.getElementById("character-guess-form").innerHTML = "You guessed correctly!!!"
+                }
+        }
+    }
+    }
+</script>

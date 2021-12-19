@@ -1,0 +1,13 @@
+
+<div id='pick-character-form'>
+    <label for='character-name-input'>Pick a character for another person:</label><br>
+    <input id='character-name-input'type="text"><br>
+    <button onclick='pick_charachter()'>Ok</button>
+</div>
+<script type="text/javascript">
+    function pick_charachter(){
+        let character = document.getElementById('character-name-input').value
+        socket.emit('pick_character', data = {'character':character})
+        document.getElementById('pick-character-form').innerHTML = '<p>Waiting for other players</p>'
+    }
+</script>

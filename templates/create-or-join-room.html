@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>Create a room:</h1><br>
+        <form action={{create_endpoint}} method="POST">
+            <input id = "new_room_key_input" type="text" name="room_key" placeholder = "Create a room key"><br>
+            <input type="submit" value="Create">
+        </form>
+        Or<br><br>
+        <h1>Join a room:</h1>
+        <form action={{join_endpoint}} method="POST">
+            <input type="text" id="existing_room_key" name="room_key" placeholder="Enter existing room key">
+            <input type="submit" value="Join">
+        </form>
+    </body>
+</html>
+

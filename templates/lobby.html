@@ -1,0 +1,24 @@
+<ul>
+    {% for user in users %}
+    <li>{{ user["name"] }}</li>
+    {% endfor %}
+</ul>
+<div id = "controls"></div>
+<script type="text/javascript">
+    if(my_role == 'Host'){
+        setInnerHTML(document.getElementById("controls"),`
+        <button id = 'start-game-button' type="button">Start game</button>
+    `)
+    
+    document.getElementById("start-game-button").addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('Iniciando jogo!!!')
+        socket.emit('start_game');
+    });
+
+    }else{
+        setInnerHTML(document.getElementById("controls"),`
+        <p>Waiting for host</p>
+    `
+    )}
+</script>

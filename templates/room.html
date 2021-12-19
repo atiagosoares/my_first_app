@@ -1,10 +1,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8">
-    const socket = io.connect('http://127.0.0.1:5000/')
+    const socket = io()
     const my_id = '{{ user_id }}'
     const my_role = '{{ user_role }}'
-    
+
     console.log(my_id)
 
     var setInnerHTML = function(elm, html) {
@@ -29,13 +29,6 @@
         setInnerHTML(element, data['doc'])
     });
 
-    $(document).ready(function() {
-        document.getElementById("start-game-button").addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Iniciando jogo!!!')
-            socket.emit('start_game');
-        });
-    })
 </script>
 
 <div id="game-screen">

@@ -6,7 +6,9 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import redirect
+from flask_sockets import Sockets
 import random
+
 
 from flask_socketio import SocketIO
 from flask_socketio import join_room, leave_room
@@ -245,7 +247,7 @@ def handle_correct_guess():
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
-    socket.run(app, debug=True)
+    socket.run(app, debug=False)
 
 
 

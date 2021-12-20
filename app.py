@@ -34,7 +34,7 @@ class Room(db.Model):
 
 class User(db.Model):
    id = db.Column(db.Integer, primary_key=True)
-   name = db.Column(db.String, nullable=False, unique=True)
+   name = db.Column(db.String, nullable=False)
    fk_room = db.Column(db.Integer, db.ForeignKey('room.id'), nullable = True)
    role = db.Column(db.String, nullable=True)
    pick_name_to = db.Column(db.Integer, db.ForeignKey('user.id'))

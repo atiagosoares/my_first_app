@@ -1,0 +1,21 @@
+body {
+    background-color: #333652;
+    text-align: center;
+    align-content: center;
+    font-family: serif;
+    color: #90ADC6
+}
+
+form {
+    vertical-align : middle;
+}
+
+ul {
+    vertical-align : middle;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+

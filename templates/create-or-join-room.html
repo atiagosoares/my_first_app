@@ -1,15 +1,19 @@
 
 {% extends 'base.html' %}
 {% block body %}
-<h1>Create a room:</h1><br>
-<form action={{create_endpoint}} method="POST">
-    <input id = "new_room_key_input" type="text" name="room_key" placeholder = "Create a room key"><br>
-    <input type="submit" value="Create">
-</form>
-Or<br><br>
+<div class="cover"></div>
+<div id="create-room-wrapper">
+    <h1>Create a room:</h1>
+    <form action={{create_endpoint}} method="POST">
+        <input id = "new_room_key_input" type="text" name="room_key" placeholder = "Create a room key"><br>
+        <input type="submit" class="important-submit" value="Create">
+    </form>
+</div>
+<div id ="join-room-wrapper">
 <h1>Join a room:</h1>
-<form action={{join_endpoint}} method="POST">
-    <input type="text" id="existing_room_key" name="room_key" placeholder="Enter existing room key"><br>
-    <input type="submit" value="Join">
-</form>
+    <form action={{join_endpoint}} method="POST">
+        <input type="text" id="existing_room_key" name="room_key" placeholder="Enter existing room key"><br>
+        <input type="submit" class="important-submit" value="Join">
+    </form>
+</div>
 {% endblock %}

@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 {% block body %}
+<div class="cover"></div>
+<div id="login-form-wrapper" class="center">
 <form method="post">
-    <label for="username">Choose a name:</label><br>
-    <input id='username' type="text" name='name'><br>
-    <input value = "Enter" type="submit"><br>
+    <label id= "username-label" for="username"><h1>Choose a name:</h1></label><br>
+    <input id= 'username-input' type="text" name='name'><br>
+    <input id = "login-submit" class="important-submit" value = "Enter" type="submit"><br>
 </form>
+</div>
 {% endblock %}

@@ -34,9 +34,37 @@
 
 </script>
 {% endblock %}
-
 {% block body %}
-<div id="game-screen">
+<div class="cover">
+    <div id="room-header" class="cover-content"> 
+        <div class="splitter-left"><h1>Room {{ room_id }}</h1></div>
+        <div class="splitter-right">
+            Room key:...<br>
+            Players: 1/16
+        </div>
+    </div>
+</div>
+<div id="game-screen" class="vertical-section">
+</div>
+<div id = "room-footer" class="vertical-section">
+    <script type="text/javascript">
+        if(my_role == 'Host'){
+            setInnerHTML(document.getElementById("controls"),`
+            <button id = 'start-game-button' type="button">Start game</button>
+        `)
+    
+        document.getElementById("start-game-button").addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Iniciando jogo!!!')
+            socket.emit('start_game');
+        });
+    
+        }else{
+            setInnerHTML(document.getElementById("controls"),`
+            <p>Waiting for host</p>
+        `
+        )}
+    </script>
 </div>
 {% endblock %}
 

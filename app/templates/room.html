@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    const socket = io()
+    const ID = '{{ user_id }}'
+    const ROLE = '{{ user_role }}'
+
+   function setInnerHTML(elm, html) {
+        elm.innerHTML = html;
+        Array.from(elm.querySelectorAll("script")).forEach( oldScript => {
+            const newScript = document.createElement("script");
+            Array.from(oldScript.attributes)
+            .forEach( attr => newScript.setAttribute(attr.name, attr.value) );
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    }
+
+
+    function start_match(){
+        socket.emit("start_match")
+    }
+
+    function close_room(){
+        socket.emit("close_room")
+    }
+
+    function open_room(){
+        socket.emit("open_room")
+    }
+
+    function end_match(){
+        socket.emit("end_match")
+    }
+
+    function terminate_room(){
+        socket.emit("terminate_room")
+    }
+
+    function leave_room(){
+        console.log("TODO...")
+    }
+
+    function pick_charachter(){
+        let character = document.getElementById('character-name-input').value
+        socket.emit('pick_character', data = {'character':character})
+        document.getElementById('pick-character-form').innerHTML = '<p>Waiting for other players</p>'
+    }
+
+    function check_guess(data){
+        var guess = document.getElementById("character-guess-input").value
+        var me = game_info['match_info']['match_player_info'].filter(player => player.fk_user == ID)[0]
+        if(guess.toLowerCase() == me['character'].toLowerCase()){
+            socket.emit("correct_guess")
+            document.getElementById("character-guess-form").innerHTML = "You guessed correctly!!!"
+        }
+    }
+
+    socket.on('game_update', function(data){
+        console.log('Game screen update')
+        console.log(data)
+        game_info = data
+        update_headers(data)
+        update_controls(data)
+        update_main(data)
+    });
+
+    socket.on('terminate', function(){
+        window.location.href = "/";
+    })
+
+    function update_headers(data){
+        header = document.getElementById("room-info")
+        html =  `<p>Room ID: ${data['room_id']}   Room key: ${data['room_key']} Players: ${data['users'].length}/16<p>`
+        header.innerHTML = html
+    }
+
+    function update_controls(data){
+        controls = document.getElementById("controls")
+        const status = data['room_status']
+        html = ""
+
+        if(ROLE=="Host"){
+            if(status=="Open"){
+                html += "<button id='start-match-button' onclick='start_match()'>Start Match</button>"
+                html += "<button id='close-room-button' onclick='close_room()'>Close Room</button>"
+            }else if(status == "Closed"){
+                html += "<button id='start-match-button' onclick='start_match()'>Start Match</button>"
+                html += "<button id='open-room-button' onclick='open_room()'>Open Room</button>"
+            }else{
+                html += "<button id='end-match-button' onclick='end_match()'>End Match</button>"
+            }
+
+            html += "<button id='terminate-room-button' onclick='terminate_room()'>Terminate Room</button>"
+        }
+        // All users always have the option to leave the room
+        html += "<button id='leave-room-button' onclick='leave_room()'>Leave Room</button>"
+
+        setInnerHTML(controls, html)
+    }
+
+    function render_lobby(data){
+        h = ""
+        for(const user of data['users']){
+
+            h += `
+            <div id="user-${user['id']}"class="user-container">
+                <div class="splitter-left status">Status</div>
+                <div class="splitter-right">${user['name']}</div>
+            </div>
+            `
+        }
+        return h
+    }
+
+    function render_character_pick_form(data){
+
+        for(user of data['match_info']['match_player_info']){
+            if(user['fk_user'] == ID){
+                var target_id = user['pick_character_to']
+                break
+            }
+        }
+
+        for(user of data['users']){
+            if(user['id'] == target_id){
+                var target = user['name']
+            }
+        }
+
+        h = `
+        <div id='pick-character-form'>
+            <label for='character-name-input'><h2>Pick a character for ${target}:</h2></label><br>
+            <input id='character-name-input'type="text"><br>
+            <button onclick='pick_charachter()'>Ok</button>
+        </div>
+        `
+        return h
+    }
+
+    function render_guessing_screen(data){
+        h = ''
+
+        for(player of data['match_info']['match_player_info']){
+            let user = data['users'].filter(user => user.id == player.fk_user)[0]
+            h += `
+            <div id='guessing-phase-player-info-container-${user.id}'>
+                ${user.name}    ${player.character}
+            </div>
+            `
+        }
+
+        h += `
+        <div id="character-guess-form">
+            <label for='character-guess-input'><h2>Who am I?</h2></label><br>
+            <input id='character-guess-input' type="text"><br>
+            <button onclick='check_guess()'>Guess</button>
+        </div>
+        `
+        return h
+    }
+
+    function update_main(data){
+        status = data['room_status']
+        main = document.getElementById("game-screen")
+
+        if(status == 'Open' || status == "Closed"){
+            html = render_lobby(data)
+        }else if(status == "Picking Phase"){
+            html = render_character_pick_form(data)
+        }else if(status == "Guessing Phase"){
+            html = render_guessing_screen(data)
+        }
+        setInnerHTML(main, html)
+    }
+
+</script>
+{% endblock %}
+{% block body %}
+<div class="cover">
+    <div id="room-header" class="cover-content"> 
+        <div id="room-title" class="splitter-left"><h1>Room {{ room_id }}</h1></div>
+        <div id="room-info" class="splitter-right">
+        </div>
+    </div>
+</div>
+
+<div id="game-screen" class="vertical-section">
+</div>
+<div id = "room-footer" class="vertical-section">
+    <div id="controls" class="bottom-frozen">
+    </div>
+</div>
+{% endblock %}
+

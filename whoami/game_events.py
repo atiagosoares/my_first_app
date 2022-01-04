@@ -1,47 +1,11 @@
-def get_game_info(room_id):
+from . import socket, db
+from .models import User, Room, Match, MatchPlayerInfo
+from .helpers import get_game_info, end_match
 
-    # Room ID
-    # Room KEY
-    # Room status
+from flask import session
+from datetime import datetime
 
-    room = Room.query.filter_by(id = room_id).first()
-    print(room)
-
-    info = {
-        'room_id' : room.id,
-        'room_key' : room.key,
-        'room_status' : room.status,
-        'users': []
-    }
-
-    # Player ID
-    # Players Ifo
-    users = User.query.filter_by(fk_room = room.id)
-
-    for user in users:
-        info['users'].append({
-            'id' : user.id,
-            'name' : user.name
-        })
-
-    # Match Info
-    match = Match.query.filter_by(fk_room = room_id, in_progress=True).first()
-
-    if match:
-        match_info = {
-            'id' : match.id,
-            'match_player_info' : []
-        }
-
-        match_player_info = MatchPlayerInfo.query.filter_by(fk_match=match.id)
-        for line in match_player_info:
-            match_info['match_player_info'].append({
-                'fk_user' : line.fk_user,
-                'pick_character_to' : line.pick_character_to,
-                'character': line.character
-            })
-        info['match_info'] = match_info
-    return info
+import random
 
 @socket.on('start_match')
 def handle_start_match():

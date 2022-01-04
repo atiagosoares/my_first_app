@@ -1,20 +1,29 @@
-from app import app
+from flask import Blueprint, session, redirect, request, render_template
+from flask.helpers import url_for
 
-@app.route("/")
+from datetime import datetime
+
+from whoami.models import User, Room
+
+from whoami import app, db
+
+con = Blueprint('con', __name__)
+
+@con.route("/")
 def index():
     user_id = session.get('user_id')
     if user_id:
         user = User.query.filter_by(id = user_id).first()
 
         if user.fk_room:
-            return redirect(url_for('room_page', room_id = user.fk_room))
+            return redirect(url_for('con.room_page', room_id = user.fk_room))
         else:
-            return redirect(url_for('create_or_join_room'))
+            return redirect(url_for('con.create_or_join_room'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('con.login'))
 
 
-@app.route("/login", methods = ['GET', 'POST'])
+@con.route("/login", methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
 
@@ -28,20 +37,20 @@ def login():
 
         session['user_id'] = new_user.id
 
-        return redirect(url_for('index'))
+        return redirect(url_for('con.index'))
 
     else:
         return render_template('login-form.html')
 
-@app.route("/create-or-join-room", methods = ['GET'])
+@con.route("/create-or-join-room", methods = ['GET'])
 def create_or_join_room():
     return render_template(
         'create-or-join-room.html',
-        create_endpoint = url_for('create_new_room'),
-        join_endpoint = url_for('join_existing_room')
+        create_endpoint = url_for('con.create_new_room'),
+        join_endpoint = url_for('con.join_existing_room')
         )
 
-@app.route('/create-room', methods=['POST'])
+@con.route('/create-room', methods=['POST'])
 def create_new_room():
 
     new_room = Room(
@@ -68,9 +77,9 @@ def create_new_room():
     session['user_role'] = user.role
     session['room_id'] = new_room.id
 
-    return redirect(url_for('room_page', room_id = new_room.id))
+    return redirect(url_for('con.room_page', room_id = new_room.id))
 
-@app.route('/join-room', methods=['POST'])
+@con.route('/join-room', methods=['POST'])
 def join_existing_room():
     
     room = Room.query.filter_by(id=request.form['room_id']).first()
@@ -87,14 +96,16 @@ def join_existing_room():
     else:
         return "Room does not exist"
 
-    return redirect(url_for('room_page', room_id = room.id))
+    return redirect(url_for('con.room_page', room_id = room.id))
 
 
-@app.route('/room/<room_id>')
+@con.route('/room/<room_id>')
 def room_page(room_id):
     return render_template('room.html', room_id = room_id, user_role = session['user_role'], user_id = session['user_id'])
 
-@app.route('/reset')
+@con.route('/reset')
 def reset():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('con.index'))
+
+from . import room_control, game_events

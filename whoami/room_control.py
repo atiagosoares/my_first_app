@@ -1,3 +1,11 @@
+from . import socket, db
+from .models import User, Room, Match, MatchPlayerInfo
+from .helpers import get_game_info, end_match, remove_user_from_room
+from flask_socketio import join_room, leave_room
+from flask import session, Blueprint
+from datetime import datetime
+
+
 @socket.on('connect')
 def handle_connect():
 
@@ -49,16 +57,6 @@ def handle_open_room():
 
     socket.emit('game_update', data = game_info, to = room.id)
 
-def remove_user_from_room(user):
-
-    #Change db values
-    user.fk_room = None
-    user.role = None
-    db.session.commit()
-
-    # We can't remove the user session data or the user from the socketio room from his id.
-    # We'll deal with that in anoter ways
-
 @socket.on("terminate_room")
 def handle_terminate_room():
 
@@ -81,12 +79,6 @@ def handle_terminate_room():
         remove_user_from_room(user)
     
     socket.emit('terminate', to = room.id)
-
-def end_match(match):
-    match.in_progress = False
-    match.status = "Ended"
-    match.match_ended_at = datetime.now()
-    db.session.commit()
     
 @socket.on("end_match")
 def handle_end_match():

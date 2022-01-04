@@ -1,3 +1,5 @@
+from whoami import db
+
 class Room(db.Model):
    id = db.Column(db.Integer, primary_key=True)
    key = db.Column(db.String, nullable=False)

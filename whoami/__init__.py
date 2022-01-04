@@ -14,13 +14,17 @@ from sqlalchemy.orm import relationship
 #general utilities
 from datetime import datetime
 import random
-from logging import PlaceHolder
+
+#from logging import PlaceHolder
 import json
 from werkzeug.datastructures import CharsetAccept
 
 app = Flask(__name__)
-app.secret_key = 'meme'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config.from_object('config')
+db = SQLAlchemy(app)
 socket = SocketIO(app)
 
-db = SQLAlchemy(app)
+from whoami.controllers import con
+app.register_blueprint(con)
+
+db.create_all()

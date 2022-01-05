@@ -7,6 +7,7 @@
     const socket = io()
     const ID = '{{ user_id }}'
     const ROLE = '{{ user_role }}'
+    var FIRST_LOAD = false
 
    function setInnerHTML(elm, html) {
         elm.innerHTML = html;
@@ -19,6 +20,52 @@
         });
     }
 
+    socket.on('user_connected', function(data){
+        game_info = data
+        update_headers(data)
+        update_main(data)
+
+        if(!FIRST_LOAD){
+            update_controls(data)
+            FIRST_LOAD = true
+        }
+    })
+
+    socket.on('user_disconnected', function(data){
+        game_info = data
+        update_headers(data)
+        update_main(data)
+    })
+
+    socket.on('room_closed', function(data){
+        game_info = data
+        update_headers(data)
+        update_controls(data)
+    })
+
+    socket.on('room_opened', function(data){
+        game_info = data
+        update_headers(data)
+        update_controls(data)
+    })
+
+    socket.on('room_terminated', function(){
+        window.location.href = "/";
+    })
+
+    socket.on('match_started', function(data){
+        update_main(data)
+        update_controls(data)
+    })
+
+    socket.on('match_ended', function(data){
+        update_main(data)
+        update_controls(data)
+    })
+
+    socket.on('advanced_to_guessing_phase', function(data){
+        update_main(data)
+    })
 
     function start_match(){
         socket.emit("start_match")
@@ -41,13 +88,18 @@
     }
 
     function leave_room(){
-        console.log("TODO...")
+        socket.emit("leave_room")
+        window.location.href = "/";
     }
 
     function pick_charachter(){
         let character = document.getElementById('character-name-input').value
         socket.emit('pick_character', data = {'character':character})
-        document.getElementById('pick-character-form').innerHTML = '<p>Waiting for other players</p>'
+        document.getElementById('pick-character-form').innerHTML = `
+        <div class="message">
+            <h3 class="textv-center">Waiting for other players.</h3>
+        </div>
+        `
     }
 
     function check_guess(data){
@@ -55,26 +107,41 @@
         var me = game_info['match_info']['match_player_info'].filter(player => player.fk_user == ID)[0]
         if(guess.toLowerCase() == me['character'].toLowerCase()){
             socket.emit("correct_guess")
-            document.getElementById("character-guess-form").innerHTML = "You guessed correctly!!!"
+            document.getElementById("character-guess-form").innerHTML = `
+            <div class='message'>
+                <h3 class="textv-center">You guessed correctly!!!</h3>
+            </div>
+            `
         }
     }
 
-    socket.on('game_update', function(data){
-        console.log('Game screen update')
-        console.log(data)
-        game_info = data
-        update_headers(data)
-        update_controls(data)
-        update_main(data)
-    });
-
-    socket.on('terminate', function(){
-        window.location.href = "/";
-    })
-
     function update_headers(data){
         header = document.getElementById("room-info")
-        html =  `<p>Room ID: ${data['room_id']}   Room key: ${data['room_key']} Players: ${data['users'].length}/16<p>`
+        
+        var html = '' 
+        html += `
+        <div class = "splitter-left room-data">
+            <p class="textv-center">ID: ${data['room_id']}</p>
+        </div>
+        `
+        html += `
+        <div class = "splitter-left room-data">
+            <p class="textv-center">Key: ${data['room_key']}</p>
+        </div>
+        `
+
+        html += `
+        <div id="room-status-indicator-${data['room_status']}" class = "splitter-left room-data">
+            <p class="textv-center">${data['room_status']}</p>
+        </div>
+        `
+
+        html += `
+        <div class = "splitter-left room-data">
+            <p class="textv-center">${data['users'].length}/16</p>
+        </div>
+        `
+       
         header.innerHTML = html
     }
 
@@ -107,9 +174,11 @@
         for(const user of data['users']){
 
             h += `
-            <div id="user-${user['id']}"class="user-container">
-                <div class="splitter-left status">Status</div>
-                <div class="splitter-right">${user['name']}</div>
+            <div id="user-${user['id']}" class="user-container">
+                <div class="user-container-tab"></div>
+                <div class="user-container-name_display">
+                    <h2 class="textv-center user-name-display">${user['name']}</h2>
+                </div>
             </div>
             `
         }
@@ -144,11 +213,20 @@
     function render_guessing_screen(data){
         h = ''
 
-        for(player of data['match_info']['match_player_info']){
+        other_players = data['match_info']['match_player_info'].filter(player => player.fk_user != ID)
+
+        for(player of other_players){
             let user = data['users'].filter(user => user.id == player.fk_user)[0]
             h += `
-            <div id='guessing-phase-player-info-container-${user.id}'>
-                ${user.name}    ${player.character}
+            <div id='guessing-phase-player-info-container-${user.id}' class="user-container">
+                <div class="user-container-tab">
+                </div>
+                <div class="user-container-name_display">
+                    <h2 class="textv-center">${user.name}</h2>
+                </div>
+                <div class="user-container-character-display">
+                    <h3 class="textv-center">${player.character}</h3>
+                </div>
             </div>
             `
         }
@@ -176,7 +254,6 @@
         }
         setInnerHTML(main, html)
     }
-
 </script>
 {% endblock %}
 {% block body %}

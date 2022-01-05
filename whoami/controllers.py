@@ -84,6 +84,12 @@ def join_existing_room():
     
     room = Room.query.filter_by(id=request.form['room_id']).first()
 
+    if not room:
+        return "Room does not exist"
+    
+    elif room.status != "Open":
+        return "Room is not open"
+
     if room.key == request.form['room_key']:
         user = User.query.filter_by(id = session['user_id']).first()
         user.fk_room = room.id
@@ -94,7 +100,7 @@ def join_existing_room():
         session['room_id'] = room.id
     
     else:
-        return "Room does not exist"
+        return "Wrong key"
 
     return redirect(url_for('con.room_page', room_id = room.id))
 

@@ -1,4 +1,4 @@
-from . import db
+from . import db, socket
 from .models import User, Room, Match, MatchPlayerInfo
 from datetime import datetime
 
@@ -56,4 +56,11 @@ def end_match(match):
     match.in_progress = False
     match.status = "Ended"
     match.match_ended_at = datetime.now()
+
+    room = Room.query.filter_by(id = match.fk_room).first()
+    room.status = "Closed"
+
     db.session.commit()
+
+    game_info = get_game_info(room.id)
+    socket.emit("match_ended", data = game_info, to = room.id)

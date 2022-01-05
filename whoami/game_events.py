@@ -47,16 +47,30 @@ def handle_start_match():
 
     game_info = get_game_info(room.id)
 
-    socket.emit('game_update', data = game_info, to = room.id)
+    socket.emit('match_started', data = game_info, to = room.id)
 
+def end_match(match):
+    match.in_progress = False
+    match.status = "Ended"
+    match.match_ended_at = datetime.now()
+
+    room = Room.query.filter_by(id = match.fk_room).first()
+    room.status = "Closed"
+
+    db.session.commit()
+
+    game_info = get_game_info(room.id)
+    socket.emit("match_ended", data = game_info, to = room.id)
 
 
 def advance_to_guessing_phase(match):
 
     match.status = "Guessing Phase"
     match.guessing_phase_started_at = datetime.now()
-
     db.session.commit()
+
+    game_info = get_game_info(match.fk_room)
+    socket.emit("advanced_to_guessing_phase", data = game_info, to = match.fk_room)
 
 @socket.on('pick_character')
 
@@ -65,8 +79,8 @@ def handle_pick_character(data):
     room = Room.query.filter_by(id = session.get('room_id')).first()
     match = Match.query.filter_by(fk_room = room.id, in_progress=True).first()
 
-    player_info = MatchPlayerInfo.query.filter_by(fk_user = session['user_id']).first()
-    player_to_set_char = MatchPlayerInfo.query.filter_by(fk_match = match.id, pick_character_to = player_info.pick_character_to).first()
+    player_info = MatchPlayerInfo.query.filter_by(fk_match = match.id, fk_user = session['user_id']).first()
+    player_to_set_char = MatchPlayerInfo.query.filter_by(fk_match = match.id, fk_user = player_info.pick_character_to).first()
 
     player_info.picked_character_at = datetime.now()
     player_to_set_char.character = data['character']
@@ -86,9 +100,17 @@ def handle_pick_character(data):
         db.session.commit()
 
         advance_to_guessing_phase(match)
+
+def check_if_all_players_guessed(match):
+    all_users_in_match = MatchPlayerInfo.query.filter_by(fk_match = match.id)
+
+    all_users_guessed = True
+    for u in all_users_in_match:
+        if not u.guessed_character_at:
+            all_users_guessed = False
+            break
     
-    game_info = get_game_info(room.id)
-    socket.emit('game_update', data = game_info, to = room.id)
+    return all_users_guessed
 
 @socket.on('correct_guess')
 def handle_correct_guess():
@@ -100,20 +122,7 @@ def handle_correct_guess():
     player_info.guessed_character_at = datetime.now()
     db.session.commit()
 
-    all_users_in_match = MatchPlayerInfo.query.filter_by(fk_match = match.id)
-
-    all_users_guessed = True
-    for u in all_users_guessed:
-        if not u.guessed_character_at:
-            all_users_ready = False
-            break
+    all_users_guessed = check_if_all_players_guessed(match)
     
-    if all_users_ready:
-
-        room.status = "Closed"
-        db.session.commit()
-
+    if all_users_guessed:
         end_match(match)
-
-    game_info = get_game_info(room.id)    
-    socket.emit('game_update', data = game_info, to = room.id)

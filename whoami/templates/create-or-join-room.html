@@ -1,15 +1,49 @@
 
 {% extends 'base.html' %}
 {% block body %}
-<div class="cover"></div>
+<div class="cover">
+    <div id="logo" class="splitter-left">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="textv-center">
+    </div>
+</div>
+<div id = "game-rules">
+    <h2>Who Am I?</h2>
+    <h3>Description</h3>
+    <p class='justify'>
+        Who Am I? is a game in which the players need to ask yes or no questions to figure out
+        what character they are. This is a really fun party game that can be played with at least
+        two people, but it is the most fun with 6 to 12 people.
+    </p>
+
+    <h3>Rules</h3>
+    <p class='justify'>
+        When the game starts, you'll assign a character to another player. Likewise, some other player
+        will assign a character to you. This character could be a famous person, a fictional character,
+        a historical figure or even an object. It's really up to you and you friends to decide what's
+        valid.<br>
+        You can't see which character you are, but you can see who everyone else is.<br>
+        The game is played in turns. In your turn, you can ask one "yes" or "no" question about who
+        you are. This question could be "Am I a real character?" or "Do I have super powers?". Your friends,
+        that can see whou you are, have to answer the question. <br>
+        The goal is to guess which character you are.
+    </p>
+    <h3>About this app</h3>
+    <p class='justify'>
+        <bold>This implementation of Who Am I? is meant to be played either in person or remotely via something
+        like Discord.</bold> <br>
+        This app will handle the aspects of assigning characters, keeping control of
+        which character everyone is and receiving guesses. Basically just enough to replace pen and paper.<br>
+        This app does not deal with the aspects of controlling turns, making questions or aswering question.
+        Those should be done outside the app. 
+    </p>
+</div>
 <div id="create-room-wrapper">
     <h1>Create a room:</h1>
     <form action={{create_endpoint}} method="POST">
         <input id = "new_room_key_input" type="text" name="room_key" placeholder = "Create a room key"><br>
         <input type="submit" class="important-submit" value="Create">
     </form>
-</div>
-<div id ="join-room-wrapper">
+    <h2>Or</h2>
 <h1>Join a room:</h1>
     <form action={{join_endpoint}} method="POST">
         <input type="text" id="existing_room_id" name="room_id" placeholder="Enter existing room ID"><br>

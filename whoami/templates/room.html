@@ -54,16 +54,19 @@
     })
 
     socket.on('match_started', function(data){
+        game_info = data
         update_main(data)
         update_controls(data)
     })
 
     socket.on('match_ended', function(data){
+        game_info = data
         update_main(data)
         update_controls(data)
     })
 
     socket.on('advanced_to_guessing_phase', function(data){
+        game_info = data
         update_main(data)
     })
 
@@ -118,27 +121,17 @@
     function update_headers(data){
         header = document.getElementById("room-info")
         
-        var html = '' 
-        html += `
-        <div class = "splitter-left room-data">
-            <p class="textv-center">ID: ${data['room_id']}</p>
+        var html = `
+        <div id="room-info-heading-display" class="splitter-left">
+            <h3 id="room-info-heading">Room Info: </h3>
         </div>
-        `
-        html += `
-        <div class = "splitter-left room-data">
-            <p class="textv-center">Key: ${data['room_key']}</p>
-        </div>
-        `
-
-        html += `
-        <div id="room-status-indicator-${data['room_status']}" class = "splitter-left room-data">
-            <p class="textv-center">${data['room_status']}</p>
-        </div>
-        `
-
-        html += `
-        <div class = "splitter-left room-data">
-            <p class="textv-center">${data['users'].length}/16</p>
+        <div id="room-info-data-display" class="splitter-left">
+            <p id="room-info-data">
+                Room ID: ${data['room_id']}<br>
+                Room Key: ${data['room_key']}<br>
+                <span class='status-${data['room_status']}'>${data['room_status']}</span><br>
+                Players: ${data['users'].length}/16
+            </p>
         </div>
         `
        
@@ -177,7 +170,7 @@
             <div id="user-${user['id']}" class="user-container">
                 <div class="user-container-tab"></div>
                 <div class="user-container-name_display">
-                    <h2 class="textv-center user-name-display">${user['name']}</h2>
+                    <h3 class="textv-center user-name-display">${user['name']}</h3>
                 </div>
             </div>
             `
@@ -222,10 +215,10 @@
                 <div class="user-container-tab">
                 </div>
                 <div class="user-container-name_display">
-                    <h2 class="textv-center">${user.name}</h2>
+                    <h3 class="textv-center username">${user.name}</h3>
                 </div>
                 <div class="user-container-character-display">
-                    <h3 class="textv-center">${player.character}</h3>
+                    <h3 class="textv-center username">${player.character}</h3>
                 </div>
             </div>
             `
@@ -259,11 +252,13 @@
 {% block body %}
 <div class="cover">
     <div id="room-header" class="cover-content"> 
-        <div id="room-title" class="splitter-left"><h1>Room {{ room_id }}</h1></div>
-        <div id="room-info" class="splitter-right">
-        </div>
+        <div id="room-title" class="splitter-left"><h2 class="textv-center">Room {{ room_id }}</h2></div>
     </div>
 </div>
+<div id="sub-header" class="cover">
+    <div id="room-info"></div>
+</div>
+
 
 <div id="game-screen" class="vertical-section">
 </div>

@@ -10,15 +10,28 @@
     --border: rgba(90,100,90,0.3)
 }
 
+#logo{
+    margin: 0px;
+    padding: 0px;
+}
+
 #login-form-wrapper{
     padding-top: 100px;
     padding-bottom: 100px;
 }
 
 #room-info{
-    width: auto;
-    padding-top: 0px;
+    height: 100%;
+    background-color: transparent;
+    border: transparent;
+    margin: auto;
     margin-top: 0px;
+    margin-bottom: 0px;
+    padding:0px;
+}
+
+#game-rules{
+    margin-top: 10px;
 }
 
 #room-status-indicator-Open{
@@ -29,10 +42,42 @@
     color: var(--primary);
 }
 
+#room-info-heading-display{
+    width: 50%;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+#room-info-data-display{
+    margin: 0px;
+    padding: 0px;
+    text-align: left;
+}
+
+#sub-header{
+    height: 90px;
+    background-color:#444;
+    margin-bottom: 10px;
+}
+
+#room-title{
+    margin: 0px;
+    padding: 0px;
+    color: var(--primary);
+}
+
+#controls {
+    padding-top: 0px;
+    height: 100px;
+}
+
+#create-room-wrapper{
+    margin-top: 10px;
+}
+
 body{
     font-family: monospace;
     text-align: center;
-    font-size: 16px;
     margin:0;
     padding: 0;
     background: -webkit-linear-gradient(left, var(--secondary) 20px, transparent 1%) center, -webkit-linear-gradient(var(--secondary) 20px, transparent 1%) center, var(--third);
@@ -92,14 +137,14 @@ input[type="submit"] {
 
 button {
     margin-bottom: 10px;
-    width: 100px;
+    width: 20%;
     height: 60px;
-    margin-right: 10px;
+    margin: 2.5%;
     padding: 10px;
     background-color: #222;
     border-width: 0px;
     border-radius: 10px;
-    font-size: medium;
+    font-size: 11px;
     font-weight: bold;
     color: white;
 }
@@ -108,11 +153,24 @@ button:hover {
     background-color: #444
 }
 
+bold {
+    color: var(--fourth);
+}
+
+.justify{
+    text-align: justify;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px
+}
+
 .cover{
     width: 100%;
     max-width: 100%;
-    height: 50px;
+    height: 40px;
     padding-top: 0px;
+    border-radius:0px;
+    margin-bottom: 0px;
 }
 
 .cover-content{
@@ -154,7 +212,7 @@ button:hover {
 
 .user-container{
     padding: 0;
-    height: 50px;
+    height: 40px;
     text-align: left;
 }
 
@@ -218,11 +276,12 @@ button:hover {
     margin: 0px;
     padding: 0px;
     background: transparent;
-    border: transparent;
+    border:transparent;
+    border-radius: 0px;
     height: 100%;
-    width: 30%;
+    width: 20%;
     float:left;
-    text-align: right;
+    text-align: center;
 }
 
 .user-container-character-display{
@@ -241,4 +300,12 @@ button:hover {
     height: 200px;
     width: 300px;
     padding: 0px;
+}
+
+.status-Open{
+    color: var(--fourth);
+}
+
+.status-Closed{
+    color: var(--primary);
 }

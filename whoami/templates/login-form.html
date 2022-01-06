@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block body %}
 <div class="cover"></div>
+    <div id="logo" class="splitter-left">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="textv-center">
+    </div>
 <div id="login-form-wrapper" class="center">
 <form method="post">
     <label id= "username-label" for="username"><h1>Choose a name:</h1></label><br>

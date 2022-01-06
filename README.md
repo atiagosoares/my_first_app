@@ -1,13 +1,28 @@
-# OBJECTIVE
+#Who Am I
 
-In this project I'll build a simple project for a web application.
+## Description</h3>
 
-I'm interested in data science, and my bigger goal is to eventually build data based application.
-Altough I'm already pretty comfortable with the the steps related to extracting data from apis, cleaning
-the data, storing the data on SQL databases, building models and visualizations, I'm know very
-little about setting up servers to host a database and application. 
+        Who Am I? is a game in which the players need to ask yes or no questions to figure out
+        what character they are. This is a really fun party game that can be played with at least
+        two people, but it is the most fun with 6 to 12 people.
 
-I also know very little about front end development.
+## Rules
 
-The goal of this project is getting more comfortable with ways to build and deploy and end-to-end
-application, setting up servers, services, etc...
+        When the game starts, you'll assign a character to another player. Likewise, some other player
+        will assign a character to you. This character could be a famous person, a fictional character,
+        a historical figure or even an object. It's really up to you and you friends to decide what's
+        valid.
+        You can't see which character you are, but you can see who everyone else is.<br>
+        The game is played in turns. In your turn, you can ask one "yes" or "no" question about who
+        you are. This question could be "Am I a real character?" or "Do I have super powers?". Your friends,
+        that can see whou you are, have to answer the question.
+        The goal is to guess which character you are
+      
+## About this app
+        
+        This implementation of Who Am I? is meant to be played either in person or remotely via something
+        like Discord.
+        This app will handle the aspects of assigning characters, keeping control of
+        which character everyone is and receiving guesses. Basically just enough to replace pen and paper.<br>
+        This app does not deal with the aspects of controlling turns, making questions or aswering question.
+        Those should be done outside the app. 

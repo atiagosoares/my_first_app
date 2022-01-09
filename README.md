@@ -1,31 +1,30 @@
-# Who Am I Online
 
-## Available at Heroku
-http://waionline.herokuapp.com/login
+This is an app for playing the party game Who Am I?
 
-## Description</h3>
+The app is currently deployed on http://waionline.herokuapp.com/
 
-        Who Am I? is a game in which the players need to ask yes or no questions to figure out
-        what character they are. This is a really fun party game that can be played with at least
-        two people, but it is the most fun with 6 to 12 people.
+# Who am I?
 
-## Rules
+In Who Am I? players assign each other characaters (that may be real or fictional characters). Nobody knows which character they are. The game is played in turns. In each turn, players can ask single Yes or No question about who they are. The goal of the game is to guess which character you are.
 
-        When the game starts, you'll assign a character to another player. Likewise, some other player
-        will assign a character to you. This character could be a famous person, a fictional character,
-        a historical figure or even an object. It's really up to you and you friends to decide what's
-        valid.
-        You can't see which character you are, but you can see who everyone else is.<br>
-        The game is played in turns. In your turn, you can ask one "yes" or "no" question about who
-        you are. This question could be "Am I a real character?" or "Do I have super powers?". Your friends,
-        that can see whou you are, have to answer the question.
-        The goal is to guess which character you are
-      
-## About this app
-        
-        This implementation of Who Am I? is meant to be played either in person or remotely via something
-        like Discord.
-        This app will handle the aspects of assigning characters, keeping control of
-        which character everyone is and receiving guesses. Basically just enough to replace pen and paper.<br>
-        This app does not deal with the aspects of controlling turns, making questions or aswering question.
-        Those should be done outside the app. 
+On the pen and paper version, the name of the characters are written in paper cards (like post-it notes) and glued on the forehead of the players in a way the players can read the character's names on the other players foreheads, but not their on.
+
+# App scope
+The app replaces the need for pen and paper.
+
+The game can be played by creating a room and joining the room by entering the room ID and room key. When all players are in the room, start the match.
+
+On the character picking phase, every player will choose a character to another player, chosen at random. On the character guessing phase, every player can see a list with every other player and their characters, but not their own, plus a form for inputing character guesses.
+
+The match ends (and returns to the lobby) when everyone guesses correctly or gives up, or if the host ends the match.
+
+The game is meant to be played either in person or remotely via an audio or video call. The aspects of controlling turns, asking and aswering questions are meant to be controlled by the player outside the app. 
+
+# Tech
+Back end:
+- Flask
+- Socket io
+- SQLlite
+
+Front End:
+- Vanilla JS
